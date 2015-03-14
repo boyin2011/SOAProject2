@@ -15,6 +15,7 @@
    "mysql": "^*",
    "mysql-wrap": "^*",
    "jade": "^*",
-   "bootstrap": "^*"
+   "bootstrap": "^*",
+   "query-string": "^*"
   }
 }

@@ -49,6 +49,10 @@ loginAuth = function (username, password) {
 }
 
 apikeysAuth = function (apikeys, pi) {
-  var deferred = Q.defer();
+  //loop through apikeys
 
-  return deferred.promise;
+
+  //if any apikey opens this pi, return pi 
+
+
+});

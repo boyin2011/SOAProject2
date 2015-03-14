@@ -27,12 +27,16 @@ app.post('/signup', passport.authenticate('signup', {
   })
 );
 
-//user wants to sign in to get APIkeys
-app.post('/signin', passport.authenticate('signin', {
-  successFlash: 'sign in success.',
-  failureFlash: 'sign in failed.' 
-  })
-);
+app.post('/SECManager/signin', function(req, res) {
+  console.log(req.body);
+});
+
+// //user wants to sign in to get APIkeys
+// app.post('/SECManager/signin', passport.authenticate('signin', {
+//   successFlash: 'sign in success.',
+//   failureFlash: 'sign in failed.' 
+//   })
+// );
 
 //user invokes a UI with APIkeys
 app.post('/', passport.authenticate('apiKeys', {
@@ -51,7 +55,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
+        console.log('error', {
             message: err.message,
             error: err
         });
@@ -60,7 +64,7 @@ if (app.get('env') === 'development') {
 
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    console.log('error', {
         message: err.message,
         error: {}
     });

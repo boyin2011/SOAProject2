@@ -1,4 +1,6 @@
+var http = require('http');
 var express = require('express');
+var querystring = require('query-string');
 var router = express.Router();
 
 router.get('/signin', function (req, res) {
@@ -7,7 +9,38 @@ router.get('/signin', function (req, res) {
 
 router.post('/signin', function (req, res) {
   //user signing in, give req.body to sec manager
-  console.log(req.body);
+  	var postData = querystring.stringify({
+		  username: req.body.username,
+		  password: req.body.password
+	});
+	console.log("postData.length");
+	console.log(postData.length);
+
+	var options = {
+	  hostname: 'localhost',
+	  port: 3001,
+	  path: '/SECManager/signin',
+	  method: 'POST',
+	  headers: {
+	    'Content-Type': 'application/x-www-form-urlencoded',
+	    'Content-Length': postData.length
+	  }
+	};
+
+ 	var req = http.request(options, function(res) {
+	  console.log('STATUS: ' + res.statusCode);
+	  console.log('HEADERS: ' + JSON.stringify(res.headers));
+	  res.setEncoding('utf8');
+	  res.on('data', function (chunk) {
+	    console.log('BODY: ' + chunk);
+	  });
+  	});
+
+	req.on('error', function(e) {
+	  console.log('problem with request: ' + e.message);
+	});
+	req.write(postData);
+	req.end();
 
 })
 
@@ -27,6 +60,5 @@ router.get('/', function (req, res) {
   //user using apikeys, give req.body to sec manager
 
 })
-
 
 module.exports = router;
