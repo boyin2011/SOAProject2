@@ -1,6 +1,6 @@
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var dynamoDB = require('./dynamoDB.js');
+var dynamoDB = require('./dynamoDB');
 
 //===============CONFIG PASSPORT=================
 passport.use('signin', new LocalStrategy(
@@ -23,23 +23,41 @@ passport.use('signin', new LocalStrategy(
   }
 ));
 
+// passport.use('signup', new LocalStrategy(
+//   function(username, password, done) {
+//     console.log("in config signup");
+//     dynamoDB.userReg(username, password)
+//     .then(function (user) {
+//       if (user) {
+//         console.log("SUCCESS REGISTERED: " + user.username);
+//         done(null, user);
+//       }
+//       if (!user) {
+//         console.log("COULD NOT REGISTER");
+//         done(null, false);
+//       }
+//     })
+//     .fail(function (err){
+//       console.log(err.body);
+//     });
+//   }
+// ));
 passport.use('signup', new LocalStrategy(
   function(username, password, done) {
     console.log("in config signup");
-    dynamoDB.userReg(username, password)
-    .then(function (user) {
-      if (user) {
-        console.log("SUCCESS REGISTERED: " + user.username);
-        done(null, user);
-      }
-      if (!user) {
-        console.log("COULD NOT REGISTER");
-        done(null, false);
-      }
-    })
-    .fail(function (err){
-      console.log(err.body);
-    });
+    dynamoDB.userReg(username, password,
+      function (user) {
+        if (user) {
+          console.log("SUCCESS REGISTERED: " + user.username);
+          done(null, user);
+        }
+        if (!user) {
+          console.log("COULD NOT REGISTER");
+          done(null, false);
+        }
+      }, function (err){
+        console.log(err.body);
+      });
   }
 ));
 

@@ -5,28 +5,7 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
-var dynamoDB = require('./dynamoDB');
-
-passport.use('signup', new LocalStrategy(
-  function(username, password, done) {
-    console.log("in config signup");
-    dynamoDB.userReg(username, password,
-      function (user) {
-        if (user) {
-          console.log("SUCCESS REGISTERED: " + user.username);
-          done(null, user);
-        }
-        if (!user) {
-          console.log("COULD NOT REGISTER");
-          done(null, false);
-        }
-      }, function (err){
-        console.log(err.body);
-      });
-  }
-));
+var passport = require('./configpassport');
 
 //===============EXPRESS=================
 
@@ -37,16 +16,17 @@ app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
-app.use(flash());
 
 //===============PROCESSING=================
 
 //user wants to register
+app.get('/', function(req, res) {
+  res.send("Hello!");
+});
 app.post('/signin', passport.authenticate('signin'));
 
 app.post('/SECManager/signup', passport.authenticate('signup', {
-  successFlash: 'sign up success.',
-  failureFlash: 'sign up failed.'
+    successRedirect: '/'
   })
 );
 
