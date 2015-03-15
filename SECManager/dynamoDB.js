@@ -1,7 +1,7 @@
 var bcrypt = require('bcryptjs');
-var Q = require('q');
-var config = require('./config.js');
-var db = require('orchestrate')(PIsAPIKeys.db);  
+// var Q = require('q'); 
+// var config = require('./config.js');
+// var db = require('orchestrate')(PIsAPIKeys.db);  
 var awsCredentials = require('./aws.credentials.json');
 
 var dyno = module.exports.dyno = require('dyno')({
@@ -55,4 +55,4 @@ apikeysAuth = function (apikeys, pi) {
   //if any apikey opens this pi, return pi 
 
 
-});
+}
