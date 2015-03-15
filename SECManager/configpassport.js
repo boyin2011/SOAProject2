@@ -25,6 +25,7 @@ passport.use('signin', new LocalStrategy(
 
 passport.use('signup', new LocalStrategy(
   function(username, password, done) {
+    console.log("in config signup");
     dynamoDB.userReg(username, password)
     .then(function (user) {
       if (user) {
@@ -61,3 +62,4 @@ passport.use('apikeys', new LocalStrategy(
   }
 ));
 
+module.exports = passport;

@@ -5,8 +5,28 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var passport = require('passport');
-var configpassport = require('./configpassport.js');
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
+var dynamoDB = require('./dynamoDB');
+
+passport.use('signup', new LocalStrategy(
+  function(username, password, done) {
+    console.log("in config signup");
+    dynamoDB.userReg(username, password,
+      function (user) {
+        if (user) {
+          console.log("SUCCESS REGISTERED: " + user.username);
+          done(null, user);
+        }
+        if (!user) {
+          console.log("COULD NOT REGISTER");
+          done(null, false);
+        }
+      }, function (err){
+        console.log(err.body);
+      });
+  }
+));
 
 //===============EXPRESS=================
 
@@ -17,19 +37,16 @@ app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
+app.use(flash());
 
 //===============PROCESSING=================
 
 //user wants to register
-app.post('/signup', passport.authenticate('signup', {
-  successFlash: 'sign up success.',
-  failureFlash: 'sign up failed.' 
-  })
-);
+app.post('/signin', passport.authenticate('signin'));
 
-app.post('/SECManager/signin', passport.authenticate('signup', {
+app.post('/SECManager/signup', passport.authenticate('signup', {
   successFlash: 'sign up success.',
-  failureFlash: 'sign up failed.' 
+  failureFlash: 'sign up failed.'
   })
 );
 
@@ -38,14 +55,14 @@ app.post('/SECManager/signin', passport.authenticate('signup', {
 // //user wants to sign in to get APIkeys
 // app.post('/SECManager/signin', passport.authenticate('signin', {
 //   successFlash: 'sign in success.',
-//   failureFlash: 'sign in failed.' 
+//   failureFlash: 'sign in failed.'
 //   })
 // );
 
 //user invokes a UI with APIkeys
 app.post('/', passport.authenticate('apiKeys', {
   successFlash: 'apiKey auth success.',
-  failureFlash: 'apiKey auth failed.' 
+  failureFlash: 'apiKey auth failed.'
   })
 );
 
