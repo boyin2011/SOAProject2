@@ -27,9 +27,13 @@ app.post('/signup', passport.authenticate('signup', {
   })
 );
 
-app.post('/SECManager/signin', function(req, res) {
-  console.log(req.body);
-});
+app.post('/SECManager/signin', passport.authenticate('signup', {
+  successFlash: 'sign up success.',
+  failureFlash: 'sign up failed.' 
+  })
+);
+
+
 
 // //user wants to sign in to get APIkeys
 // app.post('/SECManager/signin', passport.authenticate('signin', {

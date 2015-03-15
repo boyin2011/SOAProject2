@@ -41,7 +41,6 @@ router.post('/signin', function (req, res) {
 	});
 	req.write(postData);
 	req.end();
-
 })
 
 router.get('/signup', function (req, res) {
@@ -51,12 +50,45 @@ router.get('/signup', function (req, res) {
 router.post('/signup', function (req, res) {
   console.log(req.body);
   //user signing up, give req.body to sec manager
+ 	var postData = querystring.stringify({
+		  username: req.body.username,
+		  password: req.body.password,
+		  group: req.body.group
+	});
 
-})
+	console.log("postData.length");
+	console.log(postData.length);
 
-router.get('/', function (req, res) {
-  console.log(req.body);
-  // req.query.apikeys
+	var options = {
+	  hostname: 'localhost',
+	  port: 3001,
+	  path: '/SECManager/signup',
+	  method: 'POST',
+	  headers: {
+	    'Content-Type': 'application/x-www-form-urlencoded',
+	    'Content-Length': postData.length
+	  }
+	};
+
+ 	var req = http.request(options, function(res) {
+	  console.log('STATUS: ' + res.statusCode);
+	  console.log('HEADERS: ' + JSON.stringify(res.headers));
+	  res.setEncoding('utf8');
+	  res.on('data', function (chunk) {
+	    console.log('BODY: ' + chunk);
+	  });
+  	});
+
+	req.on('error', function(e) {
+	  console.log('problem with request: ' + e.message);
+	});
+	  req.write(postData);
+	  req.end();
+	})
+
+	router.get('/', function (req, res) {
+    console.log(req.body);
+  //req.query.apikeys
   //user using apikeys, give req.body to sec manager
 
 })

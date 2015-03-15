@@ -1,9 +1,11 @@
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var dynamoDB = require('./dynamoDB.js');
 
 //===============CONFIG PASSPORT=================
 passport.use('signin', new LocalStrategy(
   function(req, username, password, done) {
+    console.log(req.body);
     dynamoDB.loginAuth(username, password)
     .then(function (user) {
       if (user) {
