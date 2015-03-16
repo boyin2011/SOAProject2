@@ -8,50 +8,64 @@ var dyno = require('dyno')({
     accessKeyId: awsCredentials.accessKeyId ,
     secretAccessKey: awsCredentials.secretAccessKey ,
     region: awsCredentials.region ,
-    table: 'usertable'
 });
 
 dyno.userReg = function (username, password, onSucc, onErr) {
-  console.log("enter dyno.userReg,username=" + username + " pw="+password);
+  console.log("enter dyno.userReg,username=" + username + " password="+password);
   var item = {username: username};
   dyno.getItem(item, {table:'usertable'}, function(err, res) {
     console.log(res);
     if (res == undefined){ //no such row in db
-        console.log("username is available.");
+        console.log("USERNAME IS AVAILABLE.");
         var hashpwd = bcrypt.hashSync(password, 8);
         item.password = hashpwd;
+
         dyno.putItem(item, {table:'usertable'}, function(err, resp){
           console.log("resp=" + JSON.stringify(resp));
           if (resp != null){
-              //notify API Manager successfully registered
-              console.log("successfully registered.");
+              console.log("SUCCESSFULLY REGISTERED.");
               onSucc(item);
           }else {
-              //notify API Manager database error
-              console.log("database error.");
-              onErr(err);
+              onErr("DATABASE ERROR.");
           }
         });
     }else{
-        //notify API Manager username is not available
-        onSucc(null);
-        console.log("username is not available.");
+        onErr("USERNAME IS NOT AVAILABLE.");
     }
   });
 }
 
+dyno.loginAuth = function (username, password, onSucc, onErr) {
+  console.log("enter dyno.loginAuth,username=" + username + " password="+password);
+  var item = {username: username};
 
-dyno.loginAuth = function (username, password) {
-  var item = {username: username, password: password};
   dyno.getItem(item, {table:'usertable'}, function(err, res) {
-    if (res.body.message == null){
-          //notify API Manager username password not found
-          console.log("username password not found.");
-      }else{
-          //notify API Manager the APIKeys for this user
-      }
-  });
+    console.log(res);
+    if (res == undefined){ //no such row in db
+        onErr("USERNAME NOT FOUND.");
+    }else{
+        console.log("res=" + JSON.stringify(res));
+        var hashpwd = bcrypt.hashSync(password, 8);
+        if(res.password == hashpwd){
+        //get secgroup for this user
+        var apikeys;
+        var secgroup = {secgroup: res.body.secgroup};
+        dyno.getItem(secgroup, {table:'secgroup'}, function(err, res) {
+          if (res == undefined){ //no such row in db
+            onErr("SECGROUP NOT FOUND.");
+          }else{
+            //notify API Manager the APIKeys for this user
+            console.log("res=" + JSON.stringify(resp));
+            onSucc(resp.body.apikeys)
+          }
+        });
 
+        }else{
+          console.log("PASSWORD INCORRECT.");
+          onErr("PASSWORD INCORRECT.");
+        }
+    }
+  });
 }
 
 dyno.apikeysAuth = function (apikeys, pi) {

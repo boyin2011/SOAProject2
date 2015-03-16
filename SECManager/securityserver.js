@@ -19,36 +19,25 @@ app.use(passport.initialize());
 
 //===============PROCESSING=================
 
-//user wants to register
-app.get('/', function(req, res) {
-  res.send("Hello!");
-});
-app.post('/signin', passport.authenticate('signin'));
-
-app.post('/SECManager/signup', function(req, res, next) {
-    passport.authenticate('signup', function(err, user, info) {
-      if (err)
-        res.send("err@secserver:31 " + err);
-
-      res.send(user);
+app.post('/SECManager/signin', function(req, res, next) {
+    passport.authenticate('signin', function(err, user, info) {
+      res.send(info);
     })(req, res, next);
 });
 
-
-
-// //user wants to sign in to get APIkeys
-// app.post('/SECManager/signin', passport.authenticate('signin', {
-//   successFlash: 'sign in success.',
-//   failureFlash: 'sign in failed.'
-//   })
-// );
+//user wants to register
+app.post('/SECManager/signup', function(req, res, next) {
+    passport.authenticate('signup', function(err, user, info) {
+      res.send(info);
+    })(req, res, next);
+});
 
 //user invokes a UI with APIkeys
-app.post('/', passport.authenticate('apiKeys', {
-  successFlash: 'apiKey auth success.',
-  failureFlash: 'apiKey auth failed.'
-  })
-);
+// app.post('/', passport.authenticate('apiKeys', {
+//   successFlash: 'apiKey auth success.',
+//   failureFlash: 'apiKey auth failed.'
+//   })
+// );
 
 //===============ERROR handlers=================
 app.use(function(req, res, next) {
