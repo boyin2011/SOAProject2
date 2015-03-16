@@ -34,7 +34,7 @@ router.post('/signin', function (req, res) {
     res.on('data', function (chunk) {
       console.log('BODY: ' + chunk);
     });
-    });
+  });
 
   req.on('error', function(e) {
     console.log('problem with request: ' + e.message);
@@ -70,28 +70,31 @@ router.post('/signup', function (req, res) {
     }
   };
 
-  var req = http.request(options, function(res) {
-    console.log('STATUS: ' + res.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(res.headers));
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {
+  var req = http.request(options, function(httpRes) {
+    console.log('httpRes: ' + httpRes);
+    console.log('STATUS: ' + httpRes.statusCode);
+    console.log('HEADERS: ' + JSON.stringify(httpRes.headers));
+    httpRes.setEncoding('utf8');
+    httpRes.on('data', function (chunk) {
       console.log('BODY: ' + chunk);
     });
+    console.log("httpres: " + JSON.stringify(httpRes.user));
+    res.send(httpRes.statusCode);
   });
 
-  // req.on('error', function(e) {
-  //   console.log('problem with request: ' + e.message);
-  // });
+  req.on('error', function(e) {
+    console.log('problem with request: ' + e.message);
+  });
 
   req.write(postData);
   req.end();
 });//end post to signup
 
   router.get('/', function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
   //req.query.apikeys
   //user using apikeys, give req.body to sec manager
-
+  res.send("Hello! This is homepage.");
 })
 
 module.exports = router;

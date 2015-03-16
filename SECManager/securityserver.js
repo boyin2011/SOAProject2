@@ -25,10 +25,14 @@ app.get('/', function(req, res) {
 });
 app.post('/signin', passport.authenticate('signin'));
 
-app.post('/SECManager/signup', passport.authenticate('signup', {
-    successRedirect: '/'
-  })
-);
+app.post('/SECManager/signup', function(req, res, next) {
+    passport.authenticate('signup', function(err, user, info) {
+      if (err)
+        res.send("err@secserver:31 " + err);
+
+      res.send(user);
+    })(req, res, next);
+});
 
 
 

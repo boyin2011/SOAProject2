@@ -3,6 +3,14 @@ var LocalStrategy = require('passport-local').Strategy;
 var dynamoDB = require('./dynamoDB');
 
 //===============CONFIG PASSPORT=================
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
 passport.use('signin', new LocalStrategy(
   function(req, username, password, done) {
     console.log(req.body);
@@ -56,7 +64,7 @@ passport.use('signup', new LocalStrategy(
           done(null, false);
         }
       }, function (err){
-        console.log(err.body);
+        console.log("err in config signup:" + err.body);
       });
   }
 ));
