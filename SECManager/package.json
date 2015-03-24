@@ -7,7 +7,7 @@
   },
   "dependencies": {
    "nodemon": "^*",
-   "bcryptjs": "^0.7.12",
+   "password-hash": "^*",
    "express": "~4.11.1",
    "morgan": "~1.5.1",
    "body-parser": "~1.10.2",
@@ -16,7 +16,7 @@
    "orchestrate": "^0.3.11",
    "passport": "^0.2.1",
    "passport-local": "^1.0.0",
-   "q": "^1.0.1",
+   "async": "^*",
    "dyno": "^*"
   }
 }

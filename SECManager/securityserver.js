@@ -25,19 +25,29 @@ app.post('/SECManager/signin', function(req, res, next) {
     })(req, res, next);
 });
 
-//user wants to register
 app.post('/SECManager/signup', function(req, res, next) {
     passport.authenticate('signup', function(err, user, info) {
       res.send(info);
     })(req, res, next);
 });
 
-//user invokes a UI with APIkeys
-// app.post('/', passport.authenticate('apiKeys', {
-//   successFlash: 'apiKey auth success.',
-//   failureFlash: 'apiKey auth failed.'
-//   })
-// );
+app.post('/SECManager/APIKEYsignin', function(req, res, next) {
+    passport.authenticate('APIKEYsignin', function(err, user, info) {
+      res.send(info);
+    })(req, res, next);
+});
+
+app.post('/SECManager/createSecApikey', function(req, res, next) {
+    passport.authenticate('createSecApikey', function(err, user, info) {
+      res.send(info);
+    })(req, res, next);
+});
+
+app.post('/SECManager/createPIApikey', function(req, res, next) {
+    passport.authenticate('createPIApikey', function(err, user, info) {
+      res.send(info);
+    })(req, res, next);
+});
 
 //===============ERROR handlers=================
 app.use(function(req, res, next) {
