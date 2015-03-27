@@ -13,6 +13,7 @@ var staff = require('./routes/staff.js');
 var stores = require('./routes/stores.js');
 
 var securitymw = require('./securitymw.js');
+var logmw = require('./logmw.js');
 var mysql = require('./mysql.js');
 var pagination = require('./pagination.js');
 
@@ -33,6 +34,7 @@ app.set('view options', { layout: false });
 //===============ROUTES=================
 
 app.use(securitymw);
+app.use('/logging', logmw);
 
 app.use('/rentals', rentals);
 app.use('/payments', payments);
