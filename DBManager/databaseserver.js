@@ -1,5 +1,5 @@
-//===============API Manager =================
-// nodemon --debug=6999 ./bin/www
+//===============Database Manager =================
+// nodemon --debug=6998 ./bin/www
 
 var express = require('express');
 var path = require('path');
@@ -12,8 +12,8 @@ var payments = require('./routes/payments.js');
 var staff = require('./routes/staff.js');
 var stores = require('./routes/stores.js');
 
-var securitymw = require('./securitymw.js');
-var logmw = require('./logmw.js');
+var mysql = require('./mysql.js');
+var pagination = require('./pagination.js');
 
 //===============EXPRESS=================
 
@@ -31,8 +31,10 @@ app.set('view options', { layout: false });
 
 //===============ROUTES=================
 
-app.use(securitymw);
-app.use('/logging', logmw);
+app.use('/rentals', rentals);
+app.use('/payments', payments);
+app.use('/staff', staff);
+app.use('/stores', stores);
 
 //===============EXPRESS=================
 
