@@ -58,7 +58,7 @@ router.post('/signin', function (req, res) {
     && req.body.indexOf("apikey")>-1){
     //user giving apikeys directly
     var postData = querystring.stringify({
-      req.body
+      apikeys: req.body.apikeys
     });
 
     var options = {
