@@ -7,11 +7,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var rentals = require('./routes/rentals.js');
-var payments = require('./routes/payments.js');
-var staff = require('./routes/staff.js');
-var stores = require('./routes/stores.js');
-
 var securitymw = require('./securitymw.js');
 
 //===============EXPRESS=================

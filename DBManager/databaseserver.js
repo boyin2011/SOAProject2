@@ -65,5 +65,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-console.log('API Manager Running!!!');
+console.log('DB Manager Running!!!');
 module.exports = app;
