@@ -1,12 +1,10 @@
 var winston = require("winston");
-var AWS = require('aws-sdk'),
-  awsCredentialsPath = './aws.credentials.json',
-  sqsQueueUrl = 'https://sqs.us-west-2.amazonaws.com/667856117371/soa_queue',
-  sqsQueueArn = 'arn:aws:sqs:us-west-2:667856117371:soa_queue',
-  sqs;
-AWS.config.loadFromPath(awsCredentialsPath);
-// var aws         = require("aws-sdk"),
-    // assert      = require("assert"),
+var aws = require('aws-sdk');
+//   awsCredentialsPath = './aws.credentials.json',
+  // sqsQueueUrl = 'https://sqs.us-west-2.amazonaws.com/667856117371/logging_before',
+//   sqsQueueArn = 'arn:aws:sqs:us-west-2:667856117371:logging_before',
+//   sqs;
+// aws.config.loadFromPath(awsCredentialsPath);
 
 var util        = require("util");
 
@@ -14,13 +12,15 @@ var SQS = winston.transports.SQS = exports.SQS =  function (options) {
 
     options         = options || {};
 
-    this.name       = 'sqs';
+    this.name       = options.name;
     this.level      = options.level  || 'info';
     this.timestamp  = options.timestamp !== false;
 
-    this.queueurl   = 'https://sqs.us-west-2.amazonaws.com/667856117371/soa_queue';
-    this.client     = new AWS.SQS();
-
+    this.queueurl   = options.aws_queueurl;
+    this.client     = new aws.SQS.Client({
+        credentials : new aws.Credentials(options.aws_key, options.aws_secret),
+        region : options.aws_region || "us-west-2",
+    });
 };
 
 util.inherits(SQS, winston.Transport);

@@ -6,9 +6,18 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 /* SQS config */
-var sqs = require('./winston-sqs').SQS;
 var aws_config = require('./aws.credentials.json');
-var options = {
+var SQS = require('./winston-sqs').SQS;
+
+var beforeSQS = new (SQS)({
+  name: 'before_sqs',
+  aws_queueurl: 'https://sqs.us-west-2.amazonaws.com/667856117371/logging_before',
+  aws_key: aws_config.accessKeyId,
+  aws_secret: aws_config.secretAccessKey
+});
+
+/* SNS config */
+var sns_options = {
   aws_key: aws_config.accessKeyId,
   aws_secret: aws_config.secretAccessKey,
   subscriber: 'arn:aws:sns:us-west-2:667856117371:fatlady:3875f72f-2b83-49b9-ba5a-bfe7aa6b908c',
@@ -18,10 +27,12 @@ var options = {
 }
 
 /* winston config */
-var winston = require("winston");
-require('winston-sns').SNS;
-winston.add(winston.transports.SNS, options);
-winston.add(sqs);
+var winston = require('winston'),
+    winstonSNS = require('winston-sns');
+
+// winston.add(winstonSNS, sns_options);
+// winston.add(winston.transports.SNS, sns_options);
+winston.add(beforeSQS);
 /*******************/
 
 /* Auto generated code */
