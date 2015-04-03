@@ -27,11 +27,13 @@ app.set('view options', { layout: false });
 //===============ROUTES=================
 
 app.use(securitymw);
-app.use('/logging', logmw);
+app.use(logmw.before);
 
-//===============EXPRESS=================
+app.get('/', function(req, res) {
+    res.send("Hello world");
+});
 
-
+app.use(logmw.after);
 
 //===============ERROR Handlers=================
 app.use(function(req, res, next) {
@@ -58,5 +60,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-console.log('API Manager Running!!!');
+
 module.exports = app;
