@@ -6,8 +6,36 @@ var options = {
   method: 'POST',
 };
 
+function getTime() {
+  var now = new Date(),
+      hh = now.getHours(),
+      min = now.getMinutes(),
+      sec = now.getSeconds(),
+      dd = now.getDate(),
+      mm = now.getMonth()+1, //January is 0!
+      yyyy = now.getFullYear();
+
+  if(dd<10) {
+      dd='0'+dd
+  }
+
+  if(mm<10) {
+      mm='0'+mm
+  }
+
+  now = hh+':'+min+':'+sec+' '+mm+'/'+dd+'/'+yyyy;
+  return now;
+}
+
 exports.before = function (req, res, next) {
   options.path = '/logging/before';
+
+  var post_data = JSON.stringify({
+    log_time: getTime(),
+    remote_ip: req.ip,
+    req_url: req.originalUrl,
+    method: req.method
+  });
 
   var httpReq = http.request(options, function(httpRes) {
     console.log('STATUS: ' + httpRes.statusCode);
@@ -23,13 +51,28 @@ exports.before = function (req, res, next) {
     console.log('problem with request: ' + e.message);
   });
 
-  httpReq.write(JSON.stringify(req.body)); //send req object to loggingServer
+  httpReq.write(post_data);
   httpReq.end();
+
   next();
 }
 
 exports.after = function (req, res, next) {
+  var status = req.status;
+
+  /* no router handles the req_url */
+  if (status === undefined)
+    status = 404;
+
   options.path = '/logging/after';
+  var post_data = JSON.stringify({
+    log_time: getTime(),
+    remote_ip: req.ip,
+    req_url: req.originalUrl,
+    method: req.method,
+    statusCode: status
+  });
+
   var httpReq = http.request(options, function(res) {
     console.log('STATUS: ' + res.statusCode);
     console.log('HEADERS: ' + JSON.stringify(res.headers));
@@ -43,7 +86,10 @@ exports.after = function (req, res, next) {
     console.log('problem with request: ' + e.message);
   });
 
-  httpReq.write({request_obj: req});
+  httpReq.write(post_data);
   httpReq.end();
-  next();
+
+  /* if no router handlest the req_url, pass to err handler */
+  if (req.status === undefined)
+    next();
 }

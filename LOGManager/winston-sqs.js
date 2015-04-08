@@ -1,12 +1,9 @@
-var winston = require("winston");
-var aws = require('aws-sdk');
-//   awsCredentialsPath = './aws.credentials.json',
-  // sqsQueueUrl = 'https://sqs.us-west-2.amazonaws.com/667856117371/logging_before',
-//   sqsQueueArn = 'arn:aws:sqs:us-west-2:667856117371:logging_before',
-//   sqs;
-// aws.config.loadFromPath(awsCredentialsPath);
+var winston = require("winston"),
+    aws = require('aws-sdk'),
+    util        = require("util"),
+    awsCredentialsPath = './aws.credentials.json';
 
-var util        = require("util");
+aws.config.loadFromPath(awsCredentialsPath);
 
 var SQS = winston.transports.SQS = exports.SQS =  function (options) {
 
@@ -17,10 +14,7 @@ var SQS = winston.transports.SQS = exports.SQS =  function (options) {
     this.timestamp  = options.timestamp !== false;
 
     this.queueurl   = options.aws_queueurl;
-    this.client     = new aws.SQS.Client({
-        credentials : new aws.Credentials(options.aws_key, options.aws_secret),
-        region : options.aws_region || "us-west-2",
-    });
+    this.client     = new aws.SQS();
 };
 
 util.inherits(SQS, winston.Transport);

@@ -29,8 +29,11 @@ app.set('view options', { layout: false });
 app.use(securitymw);
 app.use(logmw.before);
 
-app.get('/', function(req, res) {
+app.get('/', function(req, res, next) {
     res.send("Hello world");
+    req.status = 333;
+    // console.log(req.status);
+    next();
 });
 
 app.use(logmw.after);
@@ -53,11 +56,7 @@ if (app.get('env') === 'development') {
 }
 
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+    res.sendStatus(err.status || 500);
 });
 
 
